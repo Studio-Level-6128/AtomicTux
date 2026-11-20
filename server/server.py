@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 import secrets
 import ssl
+import sqlite3
 import subprocess
 import time
 import tempfile
@@ -20,8 +21,12 @@ import tempfile
 from websockets.asyncio.server import serve
 from websockets.exceptions import ConnectionClosed
 try:
+    from .ratings import Ratings
+    from .spectators import Feed, http_page
     from .simulation import Match, DIRS, DEFAULT_AMOUNTS, MAX_AMOUNT
 except ImportError:
+    from ratings import Ratings
+    from spectators import Feed, http_page
     from simulation import Match, DIRS, DEFAULT_AMOUNTS, MAX_AMOUNT
 
 LOG = logging.getLogger('atomictux')
@@ -87,6 +92,7 @@ class Room:
         self.members, self.ready, self.slots = {owner.id: owner}, {owner.id: True}, {}
         self.state, self.difficulty, self.match = 'waiting', difficulty, None
         self.task, self.round = None, 0
+        self.feed, self.countdown = Feed(), 0.
         self.powerup_amounts = DEFAULT_AMOUNTS.copy()
 
     def public(self):
@@ -95,8 +101,10 @@ class Room:
                     players=[dict(id=c.id, name=c.name, ready=self.ready[c.id]) for c in self.members.values()])
 
 class GameServer:
-    def __init__(self, pem='', round_seconds=150):
+    def __init__(self, pem='', round_seconds=150, ratings_path=':memory:'):
         self.pem, self.round_seconds = pem, round_seconds
+        self.ratings = Ratings(ratings_path)
+        self.spectator_count = 0
         self.clients, self.rooms = {}, {}
 
     def rooms_message(self):
@@ -108,6 +116,8 @@ class GameServer:
             if c.name and c.room is None: c.send(msg)
 
     def broadcast_room(self, room):
+        if room.state == 'waiting':
+            room.feed.publish(dict(type='waiting'))
         for c in room.members.values(): c.send(dict(type='room', room=room.public()))
         self.broadcast_rooms()
 
@@ -123,6 +133,8 @@ class GameServer:
                 room.match.actors[slot]['name'] += ' (AI)'
                 room.match.actors[slot]['move_time'] = (.57,.28,.23)[room.difficulty]
             if not room.members:
+                room.feed.closed = True
+                room.feed.publish(dict(type='closed'))
                 if room.task and room.task is not asyncio.current_task(): room.task.cancel()
                 self.rooms.pop(room.id, None)
             else:
@@ -196,7 +208,9 @@ class GameServer:
             if room.state == 'playing': raise ValueError('A round is already running.')
             if not all(room.ready.values()): raise ValueError('Waiting for players to choose another round or leave.')
             room.slots = {client_id: i for i,client_id in enumerate(room.members)}
-            room.match = Match(secrets.randbits(32), {room.slots[p.id]: p.name for p in room.members.values()},
+            room.entrants = {room.slots[p.id]: p.name for p in room.members.values()}
+            room.countdown = 3.
+            room.match = Match(secrets.randbits(32), room.entrants,
                                room.difficulty, self.round_seconds, room.powerup_amounts)
             room.state, room.round = 'playing', room.round+1
             for p in room.members.values():
@@ -240,10 +254,17 @@ class GameServer:
                         match.check_end()
                 tick += 1
                 if tick % 3 == 0 or match.finished:
+                    room.countdown = countdown
                     msg = dict(type='snapshot', state=match.snapshot(), countdown=countdown, events=match.events[:])
+                    room.feed.publish(msg)
                     for c in room.members.values(): c.send(msg)
                     match.events.clear()
             if room.members:
+                try:
+                    winner = match.winner if match.winner in match.humans else -1
+                    self.ratings.record(room.entrants, winner)
+                except sqlite3.Error:
+                    LOG.exception('Could not save ratings for room %s round %d', room.id, room.round)
                 room.state = 'finished'
                 room.ready = dict.fromkeys(room.members, False)
                 self.broadcast_room(room)
@@ -256,6 +277,9 @@ class GameServer:
                 self.leave(c)
 
     async def handler(self, ws):
+        if ws.request.path.startswith('/watch/'):
+            await self.watch(ws)
+            return
         if len(self.clients) >= 256:
             await ws.close(1013,'Server full')
             return
@@ -284,18 +308,40 @@ class GameServer:
             writer.cancel()
             with contextlib.suppress(asyncio.CancelledError, ConnectionClosed, TimeoutError): await writer
 
+    async def watch(self, ws):
+        room = self.rooms.get(ws.request.path[7:])
+        if not room or self.spectator_count >= 256:
+            await ws.close(1013, 'Room unavailable or spectator limit reached')
+            return
+        self.spectator_count += 1
+        stream = asyncio.create_task(room.feed.stream(ws, room))
+        # Any inbound frame is a protocol violation; never dispatch player commands here.
+        reader = asyncio.create_task(ws.recv())
+        try:
+            done, _ = await asyncio.wait((stream, reader), return_when=asyncio.FIRST_COMPLETED)
+            if reader in done:
+                reader.result()
+                await ws.close(1008, 'Read-only stream')
+            else:
+                stream.result()
+        except (ConnectionClosed, TimeoutError):
+            pass
+        finally:
+            self.spectator_count -= 1
+            stream.cancel()
+            reader.cancel()
+            await asyncio.gather(stream, reader, return_exceptions=True)
+
     def http_request(self, connection, request):
         if request.path == '/certificate':
             return connection.respond(http.HTTPStatus.OK, self.pem)
-        if request.path != '/':
-            return connection.respond(http.HTTPStatus.NOT_FOUND,'Not found\n')
-        return None
+        return http_page(self, connection, request)
 
 async def main_async(args):
     context, pem = certificates(args.cert_dir)
     fingerprint = hashlib.sha256(ssl.PEM_cert_to_DER_cert(pem)).hexdigest().upper()
     print(f'AtomicTux TLS server: {args.host}:{args.port}\nCertificate SHA-256:\n{fingerprint}', flush=True)
-    game = GameServer(pem)
+    game = GameServer(pem, ratings_path=args.ratings_db or args.cert_dir/'ratings.sqlite3')
     async with serve(game.handler,args.host,args.port,ssl=context,process_request=game.http_request,
                      max_size=4096,max_queue=16,compression=None,ping_interval=15,ping_timeout=15,close_timeout=3):
         await asyncio.Future()
@@ -305,6 +351,7 @@ def main():
     parser.add_argument('--host','--ip',default='127.0.0.1',help='IP address to bind; use 0.0.0.0 for LAN access')
     parser.add_argument('--port',type=int,default=8081)
     parser.add_argument('--cert-dir',type=Path,default=Path(__file__).parent/'certs')
+    parser.add_argument('--ratings-db',type=Path,help='SQLite leaderboard file (default: ratings.sqlite3 in --cert-dir)')
     args = parser.parse_args()
     try: ipaddress.ip_address(args.host)
     except ValueError: parser.error('--host must be an IPv4 or IPv6 address')

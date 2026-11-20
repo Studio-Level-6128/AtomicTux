@@ -29,6 +29,37 @@ changing the server's identity. Back up the pair if you want clients to retain t
 Certificate files, private keys, and Python environments are excluded from Git;
 the whole server directory is excluded from Godot scanning and Android exports.
 
+## Watch in a browser
+
+Visit `https://HOST:PORT/` (for example `https://localhost:8081/`). No player
+client, login, or extra listening port is needed. Every room and its display
+names are public. Select a waiting room to catch kickoff, or join a live round
+mid-game. The same view follows rematches. Click **Enable sound** for game
+effects. Viewers cannot send inputs, occupy seats, or keep empty rooms alive.
+
+The default certificate is self-signed and issued for `atomictux`; browsers
+may warn. For private testing compare the certificate fingerprint with the
+operator's before trusting it. For public deployment use a trusted HTTPS
+reverse proxy with WebSocket upgrades enabled for `/watch/` (and for `/` if
+proxying the game clients). Keep the repository's `assets/art`, `assets/icons`,
+and `server/web` directories available to the server. The WAV files are the
+native effects exported by `tests/test_mobile.gd` from `scripts/sound.gd`.
+
+### Elo rules
+
+The top 100 names are ranked by unrounded Elo. Players start at 1200. Each
+completed round with at least two distinct human entrants compares each pair
+using pre-round ratings (K=32, averaged across opponents). A human winner beats
+every other entrant; non-winners tie each other. Draws and AI wins tie all human
+entrants. A disconnected entrant is still rated but cannot win via a replacement
+bot. Abandoned rooms, solo rounds, and rounds with duplicate entrant names are
+not rated. Names are case-sensitive, self-reported labels, **not verified accounts**.
+
+Ratings persist across restarts in `ratings.sqlite3` inside `--cert-dir`.
+Set `--ratings-db /path/to/ratings.sqlite3` to change it; the parent directory
+must already exist and be writable by the server. Back up this database while
+the server is stopped to retain the leaderboard.
+
 ## Install on Linux with systemd
 
 These instructions use a **user service**, so the server runs as your Linux user
@@ -291,6 +322,7 @@ Room state is in memory and is lost if the server restarts.
 ```sh
 # Offline Python model, room lifecycle, validation, and certificate tests.
 .venv/bin/python -m unittest tests.test_server -v
+.venv/bin/python -m unittest tests.test_spectators -v
 # Real loopback TLS server + two headless Godot clients (needs local sockets).
 .venv/bin/python -m tests.test_network_integration
 # Multiplayer screen interactions (add --display-driver x11 without --headless for previews).

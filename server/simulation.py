@@ -227,6 +227,7 @@ class Match:
                                passers=[o["id"] for o in self.actors if o["alive"] and overlaps(o["position"], a["cell"], ACTOR_RADIUS+BOMB_RADIUS)]))
         a['atomic'] = False
         a['bombs'] += 1
+        self.events.append(dict(type='place', actor=actor_id))
         a['bomb_cooldown'] = 5.4 if actor_id not in self.humans and self.difficulty == 0 else 0.
         return True
 

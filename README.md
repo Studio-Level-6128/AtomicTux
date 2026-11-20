@@ -59,6 +59,9 @@ For online play, choose **Multi Player**, enter your name, and connect to the
 preconfigured default server or a server of your own. First-time
 connections ask you to verify the server's certificate fingerprint.
 
+To watch instead of play, open `https://HOST:PORT/` on the same server. Pick a
+waiting or live game, enable sound, or browse the server's Elo leaderboard.
+
 ## Open source, built with Godot
 
 AtomicTux uses **Godot 4.6**, original game code, generated Tux-inspired artwork,
