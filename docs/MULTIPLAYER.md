@@ -33,9 +33,14 @@ the whole server directory is excluded from Godot scanning and Android exports.
 
 Visit `https://HOST:PORT/` (for example `https://localhost:8081/`). No player
 client, login, or extra listening port is needed. Every room and its display
-names are public. Select a waiting room to catch kickoff, or join a live round
-mid-game. The same view follows rematches. Click **Enable sound** for game
-effects. Viewers cannot send inputs, occupy seats, or keep empty rooms alive.
+names are public. The **Games** list refreshes automatically. Select a room
+marked **Waiting to start** to watch from kickoff, or **Live now** to watch a
+round already underway. The board and player roster update as the game runs.
+Click **Enable sound** for game effects, or **Mute sound** to turn them off.
+
+Stay in the room to follow a rematch, or choose **← All games** to switch rooms
+or check the leaderboard. Its **Rounds** column counts rated rounds, not wins.
+Viewers cannot send inputs, occupy seats, or keep empty rooms alive.
 
 The default certificate is self-signed and issued for `atomictux`; browsers
 may warn. For private testing compare the certificate fingerprint with the

@@ -55,18 +55,28 @@ Follow the **[installation guide](docs/INSTALL.md)** to install an Android APK,
 build your own, or run the game on desktop. On desktop, use **WASD / arrow keys**
 to move, **Space** to plant a bomb, and **Esc** to pause.
 
-For online play, choose **Multi Player**, enter your name, and connect to the
-preconfigured default server or a server of your own. First-time
-connections ask you to verify the server's certificate fingerprint.
+## Multiplayer: play or watch
 
-To watch instead of play, open `https://HOST:PORT/` on the same server. Pick a
-waiting or live game, enable sound, or browse the server's Elo leaderboard.
+**To play**, choose **Multi Player** in the game, enter your name, and connect to
+the default server or one of your own. Verify the certificate fingerprint on your
+first connection, then create a room or join friends in a waiting one.
+
+**To watch**, open `https://HOST:PORT/` in a browser using the game server's
+address. Pick a waiting room to see the first move, or select a live game to
+watch mid-round. Click **Enable sound** to hear the action. Watching doesn't
+take a player slot, even when all four seats are full.
+
+![Spectator lounge listing a live game and a waiting room beside the server’s Elo leaderboard](docs/screenshots/spectator-lounge.png)
+
+The leaderboard ranks display names on that server. See the
+[spectator guide](docs/MULTIPLAYER.md#watch-in-a-browser) for connection help and
+[Elo rules](docs/MULTIPLAYER.md#elo-rules) for which rounds count.
 
 ## Open source, built with Godot
 
 AtomicTux uses **Godot 4.6**, original game code, generated Tux-inspired artwork,
 and synthesized sound effects. It is an independent project inspired by classic
-bomb-arena games. Screenshots above are captured from the running desktop game.
+bomb-arena games. Screenshots above are captured from the desktop game and the browser spectator lounge.
 
 Explore the **[development guide](docs/DEVELOPMENT.md)**, read the
 **[artwork notes](docs/ART.md)**, or host your own matches with the

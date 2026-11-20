@@ -125,7 +125,7 @@ authority model, certificate handling, and network testing.
 
 ## Refresh README screenshots
 
-The committed screenshots show the actual desktop-rendered game at 1280 × 800.
+The three Godot screenshots show the desktop game at 1280 × 800.
 The arena image uses a seeded match with AI driving the player slot; it is not a mockup.
 Run with a graphical display:
 
@@ -136,6 +136,12 @@ Run with a graphical display:
 This writes `landing.png`, `arena.png`, and `single-player.png` into
 `docs/screenshots`. Review the images before committing. The screenshot folder
 is excluded from Godot imports and `docs` is excluded from Android exports.
+
+Capture `docs/screenshots/spectator-lounge.png` separately in a browser. Open
+the [spectator lounge](MULTIPLAYER.md#watch-in-a-browser) on a local test server
+with a live game, a waiting room, and some rated rounds. Use example display
+names rather than publishing real players' names. Capture the directory and
+leaderboard together, without the browser chrome.
 
 ## Balance and atomic bombs
 

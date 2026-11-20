@@ -137,6 +137,9 @@ secure WebSocket gameplay; you enter the IP and port separately in the game.
    persist for rematches. Update the server if the controls are disabled.
 4. After a round, choose **Another Round** or return to **Game List**.
 
+Just watching? No installation is needed. Open the server's `https://HOST:PORT/`
+in a browser to [watch live games or view the Elo leaderboard](MULTIPLAYER.md#watch-in-a-browser).
+
 Server availability depends on its operator. For your own server, see the
 [Linux installation and systemd guide](MULTIPLAYER.md).
 
