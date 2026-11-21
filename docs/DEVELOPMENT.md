@@ -123,6 +123,18 @@ sync when changing movement, power-ups, bomb behavior, or AI. See the
 [multiplayer implementation notes](MULTIPLAYER.md#implementation) for the protocol,
 authority model, certificate handling, and network testing.
 
+## Project website (GitHub Pages)
+
+The landing page uses plain HTML and CSS in `docs` and references the README
+screenshots directly. To preview it from the project root, run
+`python3 -m http.server 8000 --bind 127.0.0.1 --directory docs` and open
+`http://localhost:8000/`. There is no build step or game server dependency.
+
+To publish, push the files to `main`. In the repository's **Settings → Pages**,
+choose **Deploy from a branch**, select **main** and **/docs**, and save.
+The project site is separate from the live spectator lounge, which is served
+by each multiplayer server.
+
 ## Refresh README screenshots
 
 The three Godot screenshots show the desktop game at 1280 × 800.

@@ -9,7 +9,7 @@ Drop a bomb. Slip around a corner. Watch the arena change.
 and desktop—with little Linux-inspired penguins, destructible crates, and
 one very good reason to keep moving.
 
-**[Install & play](docs/INSTALL.md)** · **[Host a multiplayer server](docs/MULTIPLAYER.md)** · **[Development guide](docs/DEVELOPMENT.md)**
+**[Project website](https://keuperj.github.io/AtomicTux/)** · **[Install & play](docs/INSTALL.md)** · **[Host a multiplayer server](docs/MULTIPLAYER.md)** · **[Development guide](docs/DEVELOPMENT.md)**
 
 ## Small penguins. Plenty of ways to play.
 

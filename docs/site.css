@@ -1,0 +1,54 @@
+:root {
+  color-scheme: dark;
+  --panel: #111f30;
+  --edge: #365264;
+  --teal: #68efcd;
+  --gold: #ffce74;
+  --muted: #aec3cf;
+  font: 1rem/1.6 system-ui, sans-serif;
+  color: #ecf6f5;
+  background: #0b1622;
+}
+* { box-sizing: border-box; }
+body {
+  margin: auto;
+  width: min(74rem, 92%);
+  background-image: linear-gradient(#18303b55 1px, transparent 1px), linear-gradient(90deg, #18303b55 1px, transparent 1px);
+  background-size: 52px 52px;
+}
+a { color: var(--teal); text-underline-offset: .22em; }
+a:hover { color: var(--gold); }
+a:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
+.skip { position: absolute; top: -5rem; padding: .5rem 1rem; background: var(--panel); }
+.skip:focus { top: .5rem; }
+.bar, nav, footer { display: flex; align-items: center; flex-wrap: wrap; gap: .7rem 1.5rem; }
+.bar, footer { justify-content: space-between; padding: 1.1rem 0; }
+.bar { border-bottom: 1px solid var(--edge); }
+nav a { font-weight: 650; }
+.brand { font-size: 1.5rem; font-weight: 900; color: inherit; text-decoration: none; }
+.brand span, em { color: var(--teal); font-style: normal; }
+section { padding-block: clamp(2rem, 5vw, 4.5rem); }
+section + section, footer { border-top: 1px solid var(--edge); }
+.hero, .split, .cards { display: grid; gap: clamp(1rem, 3vw, 2.75rem); }
+.hero, .split { align-items: center; }
+.hero { grid-template-columns: 4fr 5fr; }
+.split { grid-template-columns: 5fr 4fr; }
+.cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.label, figcaption { font: bold .8rem/1.5 ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase; }
+.label { color: var(--gold); margin: 0 0 .65rem; }
+h1, h2, h3 { line-height: 1.1; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(2.6rem, 5.6vw, 4.8rem); letter-spacing: -.045em; }
+h2 { font-size: clamp(1.9rem, 4vw, 3rem); margin-bottom: 1.4rem; }
+h3 { font-size: 1.35rem; }
+p, footer { color: var(--muted); }
+.button { display: inline-block; color: #10252c; background: var(--teal); border-radius: .55rem; padding: .7rem 1.2rem; font-weight: 750; text-decoration: none; }
+.button:hover { color: #10252c; background: var(--gold); }
+figure, article { margin: 0; background: var(--panel); border: 1px solid var(--edge); border-radius: .9rem; overflow: hidden; }
+img { display: block; width: 100%; height: auto; }
+figcaption { padding: .6rem 1rem; color: var(--muted); }
+article div { padding: 1.3rem; }
+article p { margin-bottom: 0; }
+footer { margin-bottom: 1rem; }
+@media (max-width: 48rem) {
+  .hero, .split, .cards { grid-template-columns: 1fr; }
+}
