@@ -52,3 +52,5 @@ footer { margin-bottom: 1rem; }
 @media (max-width: 48rem) {
   .hero, .split, .cards { grid-template-columns: 1fr; }
 }
+.studio-credit { display: inline-flex; align-items: center; gap: .75rem; color: #68efcd; }
+.studio-credit img { width: 96px; height: auto; }

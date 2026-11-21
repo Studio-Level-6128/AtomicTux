@@ -1,5 +1,7 @@
 # Install AtomicTux
 
+<a href="https://studio-level-6128.github.io/website/"><img src="assets/studio-level-6128.png" width="120" alt=""> Made by Studio Level 6128</a>
+
 [Game overview](../README.md) · [Development](DEVELOPMENT.md) · [Host a server](MULTIPLAYER.md)
 
 All shell commands run from the project root unless stated otherwise. Tool paths

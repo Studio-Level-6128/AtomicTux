@@ -1,5 +1,7 @@
 # AtomicTux
 
+<a href="https://studio-level-6128.github.io/website/"><img src="docs/assets/studio-level-6128.png" width="120" alt=""> Made by Studio Level 6128</a>
+
 **Little penguins. Big chain reactions.**
 
 ![AtomicTux title screen with its Tux-inspired mascot and three game modes](docs/screenshots/landing.png)

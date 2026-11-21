@@ -7,6 +7,9 @@ const OnlineUI = preload("res://scripts/multiplayer_ui.gd")
 const Sound = preload("res://scripts/sound.gd")
 const Haptics = preload("res://scripts/haptics.gd")
 const TUX = preload("res://assets/art/tux.png")
+const STUDIO_LOGO = preload("res://assets/art/studio-level-6128.png")
+const STUDIO_URL := "https://studio-level-6128.github.io/website/"
+const STUDIO_CREDIT := Rect2(818, 702, 382, 72)
 const MOVE_CENTER := Vector2(1120, 620)
 const MOVE_RADIUS := 142.0
 const MOVE_TOUCH_RADIUS := 156.0
@@ -225,6 +228,9 @@ func _input(event: InputEvent) -> void:
 		_drag_pointer(-1, (event.position - position) / scale)
 
 func _pointer_down(id: int, point: Vector2) -> void:
+	if mode == "menu" and STUDIO_CREDIT.has_point(point - layout_extra / 2.0):
+		OS.shell_open(STUDIO_URL)
+		return
 	if mode == "playing" and not demo:
 		if point.distance_to(_move_center()) <= MOVE_TOUCH_RADIUS and held.is_empty():
 			_drag_pointer(id, point)
@@ -450,7 +456,8 @@ func _draw_menu() -> void:
 	_panel(Rect2(737, 625, 300, 42), INK, LINE, 21)
 	_text_center(Vector2(887, 653), "ONE TUX. ZERO SECOND CHANCES.", 14, GOLD)
 	_text(Vector2(80, 758), "OPEN SOURCE  /  GODOT  /  MADE FOR ANDROID", 13, MUTED)
-	_text(Vector2(947, 758), "SOLO / ONLINE / DEMO", 14, TEAL)
+	draw_texture_rect(STUDIO_LOGO, Rect2(STUDIO_CREDIT.position, Vector2(108, 72)), false)
+	_text(STUDIO_CREDIT.position + Vector2(120, 43), "Made by Studio Level 6128 ↗", 18, TEAL)
 
 func _draw_setup() -> void:
 	_text(Vector2(80, 88), "BUILD YOUR ARENA", 17, TEAL)

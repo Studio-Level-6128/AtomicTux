@@ -1,5 +1,11 @@
 # AtomicTux artwork
 
+<a href="https://studio-level-6128.github.io/website/"><img src="assets/studio-level-6128.png" width="120" alt=""> Made by Studio Level 6128</a>
+
+## Studio logo
+
+The credit uses a resized copy of the [official still logo](https://studio-level-6128.github.io/website/assets/logo-still.png). The game and spectator server share `assets/art/studio-level-6128.png`; the documentation keeps the same image in `docs/` for the standalone website.
+
 ## Generated mascot
 
 - Final asset: `assets/art/tux.png` (1254 × 1254 RGBA).

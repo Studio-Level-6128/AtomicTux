@@ -15,6 +15,7 @@ FILES = {'/': (WEB / 'index.html', 'text/html; charset=utf-8'),
          '/watch.js': (WEB / 'watch.js', 'text/javascript'),
          '/arena.js': (WEB / 'arena.js', 'text/javascript'),
          '/watch.css': (WEB / 'watch.css', 'text/css'),
+         '/studio-level-6128.png': (ASSETS / 'art/studio-level-6128.png', 'image/png'),
          '/tux.png': (ASSETS / 'art/tux.png', 'image/png')}
 for kind in ('bomb', 'fire', 'speed', 'kick', 'shield', 'atomic'):
     FILES[f'/{kind}.svg'] = (ASSETS / f'icons/{kind}.svg', 'image/svg+xml')
